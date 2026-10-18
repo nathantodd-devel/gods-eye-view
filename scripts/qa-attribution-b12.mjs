@@ -67,6 +67,7 @@ const REQUIRED_CREDIT_SUBSTRINGS = [
   'AISStream',                   // vessels
   'City of Austin',              // CCTV
   'Radio Browser',               // internet-radio directory
+  'Space Weather Prediction Center', // space weather
 ];
 
 async function main() {

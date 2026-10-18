@@ -80,9 +80,9 @@ token: published v2 links are authored state, and the reservation remains even
 if its layer is later removed.
 
 New layers first use the remaining unreserved single-character digits (`0`
-through `9`), then the two-character base-36 namespace (`00` through `zz`). On the
-current published ledger, `0`, `1`, `2` and `3` are already owned, so the next
-choices are `4` through `9`, then `00`. After rebasing onto the latest `main`, run
+through `9`), then the two-character base-36 namespace (`00` through `zz`). The
+ledger is the record of which are already owned; `npm run layer-token:next`
+reports the next free one rather than this page. After rebasing onto the latest `main`, run
 `npm run layer-token:next -- <layer-id>`, add that result to both the permanent
 JSON reservation ledger and registry entry, and keep the exact registered-layer
 count assertion up to date. The token is assigned against the merge-time base, not

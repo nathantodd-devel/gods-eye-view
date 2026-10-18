@@ -87,6 +87,10 @@ const PANEL_GROUPS = [
     ],
   },
   {
+    label: msg('Ham radio'),
+    ids: ['space-weather', 'day-night', 'maidenhead-grid'],
+  },
+  {
     label: msg('Utilities'),
     ids: ['directions', 'radio'],
   },
@@ -461,6 +465,7 @@ export class LayerPanel {
               'weather-lightning',
               'weather-cyclones',
               'air-quality',
+              'space-weather',
             ].includes(layer.id),
         )
         .map((layer) => ({

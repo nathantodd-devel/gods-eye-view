@@ -75,6 +75,18 @@ export function solarPositionECI(dateMs) {
 }
 
 /**
+ * The point on Earth with the Sun at its zenith.
+ * @param {number} dateMs UTC epoch timestamp in milliseconds
+ * @returns {{ latDeg: number, lonDeg: number }} Longitude in [-180, 180)
+ */
+export function subsolarPoint(dateMs) {
+  const sun = solarPositionECI(dateMs);
+  const gmstDeg = gstime(new Date(dateMs)) * R2D;
+  const lonDeg = ((((sun.raDeg - gmstDeg + 180) % 360) + 360) % 360) - 180;
+  return { latDeg: sun.decDeg, lonDeg };
+}
+
+/**
  * Check whether a satellite in ECI is illuminated by the Sun (outside Earth shadow).
  * Uses a cylindrical Earth shadow model with mean radius 6,371 km.
  * @param {{ x: number, y: number, z: number }} satECI Satellite position in km

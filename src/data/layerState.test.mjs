@@ -30,6 +30,18 @@ import { stampInitialShareGesture } from '../navigationPolicy.js';
 import { MAX_SINCE_DAYS } from '../layers/streetLevel/policy.js';
 import { SINCE_STOPS } from '../ui/streetLevelPresentation.js';
 
+/**
+ * The ledger as published through air-quality. Allocation tests run against
+ * this fixed base, so a new layer claiming the next free token does not move
+ * the digits they expect.
+ */
+const ALLOCATION_BASE = Object.freeze({
+  ...LEGACY_LAYER_STATE_TOKENS,
+  'street-level': '0',
+  'gnss-integrity': '3',
+  'air-quality': '4',
+});
+
 function deferred() {
   let resolve;
   let reject;
@@ -202,8 +214,8 @@ function encode(state) {
 
 test('production registry is exact, canonical, and rejects incomplete contracts', async () => {
   assert.equal(validateLayerStateRegistry(), true);
-  assert.equal(REGISTERED_LAYER_IDS.length, 31);
-  assert.equal(new Set(REGISTERED_LAYER_IDS).size, 31);
+  assert.equal(REGISTERED_LAYER_IDS.length, 34);
+  assert.equal(new Set(REGISTERED_LAYER_IDS).size, 34);
   assert.ok(REGISTERED_LAYER_IDS.includes('transit'));
   assert.deepEqual(REGISTERED_LAYER_IDS, [...REGISTERED_LAYER_IDS].sort());
   assert.deepEqual(LEGACY_LAYER_STATE_TOKENS, {
@@ -242,17 +254,23 @@ test('production registry is exact, canonical, and rejects incomplete contracts'
   for (const [id, token] of Object.entries(LEGACY_LAYER_STATE_TOKENS)) {
     assert.equal(LAYER_STATE_TOKEN_RESERVATIONS[id], token);
   }
-  assert.equal(nextLayerStateToken(), '5');
+  // The live ledger hands out a token nobody holds.
+  assert.ok(
+    !Object.values(LAYER_STATE_TOKEN_RESERVATIONS).includes(
+      nextLayerStateToken(),
+    ),
+  );
+  assert.equal(nextLayerStateToken(ALLOCATION_BASE), '5');
   assert.equal(
     nextLayerStateToken({
-      ...LAYER_STATE_TOKEN_RESERVATIONS,
+      ...ALLOCATION_BASE,
       alpha: '5',
       bravo: '6',
     }),
     '7',
   );
   const digitsExhausted = {
-    ...LAYER_STATE_TOKEN_RESERVATIONS,
+    ...ALLOCATION_BASE,
     ...Object.fromEntries(
       [...'56789'].map((digit) => [`prior-${digit}`, digit]),
     ),
@@ -305,8 +323,8 @@ test('production registry is exact, canonical, and rejects incomplete contracts'
     true,
   );
   assert.equal(
-    validateLayerStateAllocations(LAYER_STATE_TOKEN_RESERVATIONS, {
-      ...LAYER_STATE_TOKEN_RESERVATIONS,
+    validateLayerStateAllocations(ALLOCATION_BASE, {
+      ...ALLOCATION_BASE,
       future: '5',
       next: '6',
     }),
@@ -314,8 +332,8 @@ test('production registry is exact, canonical, and rejects incomplete contracts'
   );
   assert.throws(
     () =>
-      validateLayerStateAllocations(LAYER_STATE_TOKEN_RESERVATIONS, {
-        ...LAYER_STATE_TOKEN_RESERVATIONS,
+      validateLayerStateAllocations(ALLOCATION_BASE, {
+        ...ALLOCATION_BASE,
         future: '00',
       }),
     /next free token 5/,
@@ -341,8 +359,8 @@ test('production registry is exact, canonical, and rejects incomplete contracts'
   assert.throws(
     () =>
       validateLayerStateAllocations(
-        { ...LAYER_STATE_TOKEN_RESERVATIONS, merged: '5' },
-        { ...LAYER_STATE_TOKEN_RESERVATIONS, merged: '5', competing: '5' },
+        { ...ALLOCATION_BASE, merged: '5' },
+        { ...ALLOCATION_BASE, merged: '5', competing: '5' },
       ),
     /next free token 6/,
   );

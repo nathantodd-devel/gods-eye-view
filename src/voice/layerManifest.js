@@ -44,6 +44,39 @@ const AIRCRAFT_FIELDS = {
 
 const layers = [
   {
+    id: 'space-weather',
+    aliases: [
+      'space weather',
+      'solar wind',
+      'solar activity',
+      'band conditions',
+      'propagation',
+      'kp index',
+      'solar flux',
+    ],
+    context: false,
+    noQuery: 'conditions readout card; no countable records',
+  },
+  {
+    id: 'day-night',
+    aliases: [
+      'day night',
+      'day and night',
+      'gray line',
+      'grey line',
+      'terminator',
+      'night side',
+    ],
+    context: false,
+    noQuery: 'map overlay; no countable records',
+  },
+  {
+    id: 'maidenhead-grid',
+    aliases: ['maidenhead', 'maidenhead grid', 'grid squares', 'qth locator'],
+    context: false,
+    noQuery: 'map overlay; no countable records',
+  },
+  {
     id: 'gnss-integrity',
     aliases: [
       'gnss integrity',

@@ -177,6 +177,13 @@ export const DATA_CREDITS = [
       '· <a href="https://eccc-msc.github.io/open-data/licence/readme_en/" target="_blank" rel="noopener">ECCC Data Servers End-use Licence</a>',
   },
   {
+    key: 'noaa-swpc',
+    html:
+      'Space weather: NOAA Space Weather Prediction Center ' +
+      '(<a href="https://www.swpc.noaa.gov" target="_blank" rel="noopener">swpc.noaa.gov</a>); ' +
+      "HF band ratings are this app's estimate, not a NOAA product",
+  },
+  {
     key: 'overture-military-names',
     html: 'Military area names: <a href="https://overturemaps.org" target="_blank" rel="noopener">Overture Maps Foundation</a> (ODbL)',
   },
