@@ -912,6 +912,11 @@ html:not([lang='en']) .pp-slider-row > .pp-slider-mini-label {
   }
 }
 
+/* After the narrow-screen rule so the two-way switch keeps its two columns. */
+.projection-mode-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 /* Order matters, and matches `.data-toggle-btn`: hover/focus, then active, then
    disabled — all at the same specificity, so the later rule wins. Hovering the
    active chip must not wash the cyan out, and a disabled chip must not light up

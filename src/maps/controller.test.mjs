@@ -1382,3 +1382,24 @@ test('a hung imagery attempt that lands after its deadline is released, never ca
   await settle();
   assert.equal(good.destroyed, true);
 });
+
+test('a stack lock makes a stack unavailable with its reason until unlocked', async () => {
+  const errors = [],
+    env = publicFixture();
+  env.controller._onError = (message) => errors.push(message);
+  await env.controller.setStack('esri-imagery');
+  env.controller.setStackLock('photoreal', 'Google 3D needs Globe view');
+  const locked = env.controller
+    .getStacks()
+    .find((stack) => stack.id === 'photoreal');
+  assert.equal(locked.available, false);
+  assert.equal(locked.unavailableReason, 'Google 3D needs Globe view');
+  await env.controller.setStack('photoreal');
+  assert.equal(env.controller.getActiveId(), 'esri-imagery');
+  assert.deepEqual(errors, ['Google 3D needs Globe view']);
+  env.controller.setStackLock('photoreal', null);
+  assert.equal(env.controller.isStackAvailable('photoreal'), true);
+  await env.controller.setStack('photoreal');
+  assert.equal(env.controller.getActiveId(), 'photoreal');
+  env.controller.destroy();
+});

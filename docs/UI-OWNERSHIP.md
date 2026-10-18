@@ -14,6 +14,7 @@ scene playback and voice. It delegates; new behavior belongs with its owner.
 | `aircraftDisplay.js` | Shared commercial/military 3D display preferences and controls |
 | `layerBindings.js` | Data-manager attachment, selected-tracker adoption and camera-entry listeners |
 | `displayBindings.js` | Keyboard/display subscriptions and frame-rate monitor lifetime |
+| `projectionMode.js` | Globe / Mercator scene mode, the Google 3D lock and its restore on leaving the flat map |
 | `shareRestoration.js` | Initial share/layer restoration and cancellation |
 | `shellFeedback.js` | Loading feedback, notices and toast lifetime |
 

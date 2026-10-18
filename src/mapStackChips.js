@@ -155,8 +155,8 @@ export function renderMapStackChips(
 }
 
 /**
- * Re-points the active chip at controller state. Availability never changes at
- * runtime (it tracks the ion token), so only the active/pressed pair is synced.
+ * Re-points the active chip at controller state. Only the active/pressed pair
+ * is synced; when availability changes (a stack lock), re-render the row.
  * @param {HTMLElement} container - Row element.
  * @param {string|null} activeId - Currently active stack id.
  * @returns {void}

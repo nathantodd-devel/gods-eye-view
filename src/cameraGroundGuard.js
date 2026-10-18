@@ -94,6 +94,12 @@ export function guardCameraAboveGround(viewer, at, options = {}) {
   } = options;
   if (!viewer?.scene || !Number.isFinite(at?.lat) || !Number.isFinite(at?.lon))
     return () => {};
+  // Clearance is a 3D question; the flat map has no surface to sink into.
+  if (
+    viewer.scene.mode !== undefined &&
+    viewer.scene.mode !== Cesium.SceneMode.SCENE3D
+  )
+    return () => {};
 
   let timer = null;
   let done = false;

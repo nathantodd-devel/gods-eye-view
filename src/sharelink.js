@@ -120,6 +120,7 @@ export class ShareLinkManager {
     // outside-fill opacity as a percent, 94..100. (`sce`, 2026-08-17)
     this._scopeTerminusPct = null;
     this._mapStack = 'photoreal';
+    this._projection = 'globe';
     this._layerStateProvider = null;
     this._panelStateProvider = null;
     this._styleParamStateProvider = null;
@@ -237,6 +238,7 @@ export class ShareLinkManager {
         ? clampScopeTerminusPct(params.get('sce'))
         : null,
       mapStack: params.get('map') || 'photoreal',
+      projection: params.get('proj') === 'm' ? 'mercator' : 'globe',
       layerState: decodedLayerState,
       layerStateInvalid:
         params.get('v') === '2' &&
@@ -358,6 +360,7 @@ export class ShareLinkManager {
         scopeFeatherPct: visualCurrent ? state.scopeFeatherPct : undefined,
         scopeTerminusPct: visualCurrent ? state.scopeTerminusPct : undefined,
         mapStack: mapCurrent ? state.mapStack : undefined,
+        projection: mapCurrent ? state.projection : undefined,
         panelState,
         styleParams: visualCurrent ? state.styleParams : undefined,
       });
@@ -502,6 +505,8 @@ export class ShareLinkManager {
       this._scopeTerminusPct = clampScopeTerminusPct(extras.scopeTerminusPct);
     }
     if (typeof extras.mapStack === 'string') this._mapStack = extras.mapStack;
+    if (extras.projection === 'globe' || extras.projection === 'mercator')
+      this._projection = extras.projection;
     this._scheduleUpdate();
   }
 
@@ -544,6 +549,8 @@ export class ShareLinkManager {
   /** Build a deterministic snapshot without mutating history. */
   _buildHashParams() {
     if (this._destroyed) return null;
+    // Mid-morph between globe and flat map the camera has no orientation.
+    if (this.viewer.scene?.mode === Cesium.SceneMode.MORPHING) return null;
     const camera = this.viewer.camera;
     const carto = camera.positionCartographic;
     if (!carto) return null;
@@ -588,6 +595,8 @@ export class ShareLinkManager {
     const terminusPct = clampScopeTerminusPct(this._scopeTerminusPct);
     if (terminusPct != null) params.set('sce', String(terminusPct));
     params.set('map', this._mapStack);
+    // Only written for the flat map — an absent `proj` IS the globe.
+    if (this._projection === 'mercator') params.set('proj', 'm');
     const layerState = this._layerStateProvider?.();
     if (layerState) encodeLayerStateParams(params, layerState);
     this._encodePanelStateParam(params, this._panelStateProvider?.());

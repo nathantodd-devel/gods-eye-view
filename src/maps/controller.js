@@ -37,6 +37,8 @@ export class MapSourceController {
     this.viewer = viewer;
     this._registry = registry;
     this._sources = indexMapSources(registry.sources);
+    /** Stack id → reason, for stacks another owner has made unavailable. */
+    this._stackLocks = new Map();
     this._activeId = this.isStackAvailable(initialStack)
       ? initialStack
       : registry.defaultId;
@@ -90,10 +92,25 @@ export class MapSourceController {
   }
   isStackAvailable(id) {
     const source = this._sources.get(id);
-    return Boolean(source && source.available !== false);
+    return Boolean(
+      source && source.available !== false && !this._stackLocks.has(id),
+    );
+  }
+  /**
+   * Make a stack unavailable (with `reason`) until it is unlocked with
+   * `reason = null`. Locking never switches away from the active stack and
+   * emits nothing; the owner refreshes whatever presents availability.
+   * @param {string} id
+   * @param {string|null} reason
+   */
+  setStackLock(id, reason) {
+    if (this._destroyed) return;
+    if (reason) this._stackLocks.set(id, String(reason));
+    else this._stackLocks.delete(id);
   }
   _unavailableReason(stack) {
     return (
+      this._stackLocks.get(stack?.id) ||
       this._sources.get(stack?.id)?.unavailableReason ||
       `${stack?.label || 'This map stack'} is unavailable`
     );

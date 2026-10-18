@@ -82,6 +82,7 @@ export class CockpitCoordinator {
           flightsEnabled: !!this._dataManager?.isEnabled('flights'),
           militaryEnabled: !!this._dataManager?.isEnabled('military'),
         }),
+      prepareEntry: () => this._ensureGlobeProjection?.(),
       onEntered: () => this.enterPanels(),
       onExited: () => this.exitPanels(),
       restoreTrackingFrame: (entity) => {

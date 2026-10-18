@@ -778,3 +778,20 @@ test('visual input listeners are revoked before asynchronous UI teardown', () =>
   assert.match(VisualSettings.prototype.stop.toString(), /this\._styleParameters\?\.destroy\(\)/);
   assert.match(VisualSettings.prototype.stop.toString(), /this\._visualEffects\.stop\(\)/);
 });
+
+test('share links carry the Mercator projection only when it is on', () => {
+  assert.equal(makeManager('#lat=10&lon=20').parseInitialHash().projection, 'globe');
+  assert.equal(
+    makeManager('#lat=10&lon=20&proj=m').parseInitialHash().projection,
+    'mercator',
+  );
+  const manager = makeManager();
+  manager.onToggleChange(false, false, { projection: 'mercator' });
+  clearTimeout(manager._debounceTimer);
+  manager._updateHash();
+  assert.equal(new URLSearchParams(window.location.hash.slice(1)).get('proj'), 'm');
+  manager.onToggleChange(false, false, { projection: 'globe' });
+  clearTimeout(manager._debounceTimer);
+  manager._updateHash();
+  assert.equal(new URLSearchParams(window.location.hash.slice(1)).has('proj'), false);
+});

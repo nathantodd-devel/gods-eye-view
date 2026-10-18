@@ -44,10 +44,11 @@ await app.destroy();
 
 The example's containers and three remaining constructors are supplied by the
 consumer. The viewer helper preserves the standalone viewer's render settings;
-it neither selects map sources nor reads keys. Supply a visible credit container
-and retain all attribution required by the chosen sources. Cesium is external to
-this export: the consuming build must provide the same instance used elsewhere
-in its application.
+it neither selects map sources nor reads keys. Its map projection is Web
+Mercator, which only the flat (2D) Mercator mode uses. Supply a visible credit
+container and retain all attribution required by the chosen sources. Cesium is
+external to this export: the consuming build must provide the same instance
+used elsewhere in its application.
 
 ## Lifecycle and ownership
 

@@ -109,6 +109,14 @@ test('the guard leaves a clear view untouched', async () => {
   assert.equal(viewer.flights.length, 0);
 });
 
+test('the guard stands down on the flat map', async () => {
+  const viewer = fakeViewer({ cameraHeightM: 172, surfaceM: 171 });
+  viewer.scene.mode = Cesium.SceneMode.SCENE2D;
+  guardCameraAboveGround(viewer, { lat: 30.3125, lon: -97.765 }, { intervalMs: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  assert.equal(viewer.flights.length, 0);
+});
+
 // Handoffs act before the delayed probe, even when the next owner stays low.
 import { NavigationController } from './ui/navigationController.js';
 import { SceneDirector } from './scenes/director.js';

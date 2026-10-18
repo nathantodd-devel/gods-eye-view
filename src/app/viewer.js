@@ -119,6 +119,8 @@ export function createApplicationViewer({ container, creditContainer }) {
     selectionIndicator: false,
     infoBox: false,
     baseLayer: false,
+    // Only used by the flat (2D) map; the 3D globe is unaffected.
+    mapProjection: new Cesium.WebMercatorProjection(),
     creditContainer,
     msaaSamples: 4,
     contextOptions: { webgl: { preserveDrawingBuffer: true } },

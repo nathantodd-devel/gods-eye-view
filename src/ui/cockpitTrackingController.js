@@ -134,6 +134,8 @@ export function enter() {
   const info = this.readAircraftInfo();
   const entity = this.viewer.trackedEntity;
   if (!info || !entity?.position) return false;
+  // The cockpit camera needs the 3D globe; leaving the flat map is immediate.
+  this.prepareEntry?.();
   this.entryFocusOrigin =
     document.activeElement instanceof HTMLElement
       ? document.activeElement

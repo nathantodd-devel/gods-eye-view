@@ -214,6 +214,8 @@
   "src/ui/mapSource.js",
   "src/ui/mapSourceControls.js",
   "src/ui/mapSourceControls.test.mjs",
+  "src/ui/projectionMode.js",
+  "src/ui/projectionMode.test.mjs",
   "src/mapStackChips.js",
   "scripts/qa-map-source-controls.mjs",
   "src/ui/layers.js",

@@ -22,6 +22,10 @@ import { LocationNavigation } from './locationNavigation.js';
 import { bindClearLayersControl } from './layers.js';
 import { bindCameraOrientationControls } from './cameraOrientationControls.js';
 import { createMapSourceControls } from './mapSource.js';
+import {
+  bindProjectionControls,
+  createProjectionMode,
+} from './projectionMode.js';
 import { STYLES } from './effects.js';
 import { isHudLayout } from '../hudLayouts.js';
 import {
@@ -243,6 +247,9 @@ export class StyleManager extends ShellFacade {
           this._scheduleRightPanelLayout(...args),
         _setCockpitDisclosure: (...args) => this._setCockpitDisclosure(...args),
         _setMapStack: (...args) => this._setMapStack(...args),
+        _setProjectionMode: (...args) => this._setProjectionMode(...args),
+        _ensureGlobeProjection: (...args) =>
+          this._ensureGlobeProjection(...args),
         _syncPanelCollapseButton: (...args) =>
           this._syncPanelCollapseButton(...args),
         _syncShareState: (...args) => this._syncShareState(...args),
@@ -256,6 +263,7 @@ export class StyleManager extends ShellFacade {
       readContextMode: () => this._contextMode,
       readContextChanging: () => this._contextModeChanging,
       readDisplayPortalActive: () => this._cockpitDisplayPortalActive,
+      readProjection: () => this._projectionMode,
     });
 
     this._layerBindings = new LayerBindings({
@@ -351,6 +359,8 @@ export class StyleManager extends ShellFacade {
         _updateTrafficSyncChip: (...args) =>
           this._updateTrafficSyncChip(...args),
         _showToast: (...args) => this._showToast(...args),
+        _ensureGlobeProjection: (...args) =>
+          this._ensureGlobeProjection(...args),
       },
     });
     this._lastTrafficChipUpdateAt = 0;
@@ -399,6 +409,8 @@ export class StyleManager extends ShellFacade {
           this._scheduleRightPanelLayout(...args),
         _syncContextRadioLauncherState: (...args) =>
           this._syncContextRadioLauncherState(...args),
+        _ensureGlobeProjection: (...args) =>
+          this._ensureGlobeProjection(...args),
       },
       readDataManager: () => this._dataManager,
       readContext: () => this.getContextModeState(),
@@ -872,6 +884,39 @@ export class StyleManager extends ShellFacade {
       onStateChanged: () => this._syncShareState(),
       onError: (message) => this._showToast(message),
     });
+    this._projectionControls?.destroy();
+    this._projectionMode?.destroy();
+    this._projectionMode = createProjectionMode({
+      scene: this.viewer.scene,
+      mapStackController: this.mapStackController,
+      onChange: () => {
+        // A stack lock changes chip availability, which a sync cannot show.
+        this._mapSourceControls?.refresh();
+        this._projectionControls?.render();
+        this._syncShareState();
+      },
+    });
+    this._projectionControls = bindProjectionControls({
+      container: this._projectionModeRow,
+      projection: this._projectionMode,
+      claimSelection: () => this.shareLinkManager?.claimRestoreLane?.('map'),
+    });
+  }
+
+  /**
+   * Switches between the 3D globe and the flat Mercator map.
+   * @param {'globe'|'mercator'} mode
+   * @param {{ keepView?: boolean }} [options]
+   * @returns {Promise<string>} The settled mode.
+   */
+  async _setProjectionMode(mode, options) {
+    if (!this._projectionMode) return 'globe';
+    return this._projectionMode.setMode(mode, options);
+  }
+
+  /** Leave the flat map at once, for features that need a 3D camera. */
+  _ensureGlobeProjection() {
+    return this._projectionMode?.ensureGlobe() ?? Promise.resolve('globe');
   }
 
   /**
@@ -1427,6 +1472,7 @@ export class StyleManager extends ShellFacade {
     return {
       style: this.activeStyle || 'normal',
       mapStack: this.mapStackController?.getActiveId?.() || null,
+      projection: this._projectionMode?.getMode?.() || 'globe',
       hud: {
         visible: !!this.hud?.visible,
         layout: this.hud?.getVariant?.() || null,
@@ -1736,6 +1782,8 @@ export class StyleManager extends ShellFacade {
 
     this._displayBindings.destroy();
     this._mapSourceControls?.destroy();
+    this._projectionControls?.destroy();
+    this._projectionMode?.destroy();
     this._cameraOrientationControls?.destroy();
     this._clearLayersControl?.destroy();
     this._cctvControls?.destroy();

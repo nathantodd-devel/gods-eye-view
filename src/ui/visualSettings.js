@@ -70,6 +70,7 @@ export class VisualSettings {
       scopeFeatherPct,
       scopeTerminusPct,
       mapStack,
+      projection,
       panelState,
       styleParams,
     } = state || {};
@@ -158,6 +159,8 @@ export class VisualSettings {
       : Promise.resolve();
     if (panelState) this._restorePanelState(panelState);
     await mapStackRestore;
+    // After the stack: Mercator from Google 3D remembers it as its restore.
+    if (projection === 'mercator') await this._setProjectionMode(projection);
     this._syncShareState();
   }
 
@@ -175,6 +178,7 @@ export class VisualSettings {
     readContextMode,
     readContextChanging,
     readDisplayPortalActive,
+    readProjection = () => null,
   }) {
     Object.assign(this, elements, operations, {
       viewer,
@@ -188,6 +192,7 @@ export class VisualSettings {
       readContextMode,
       readContextChanging,
       readDisplayPortalActive,
+      readProjection,
     });
     this._lifetime = new UiLifetime();
     this._visualEffects = new VisualEffects({
@@ -900,7 +905,11 @@ export class VisualSettings {
           getScopeTerminusOverride() == null
             ? null
             : Math.round(getScopeTerminusOverride() * 100),
-        mapStack: this.mapStackController?.getActiveId?.() || 'photoreal',
+        mapStack:
+          this.readProjection()?.getShareStackId?.() ||
+          this.mapStackController?.getActiveId?.() ||
+          'photoreal',
+        projection: this.readProjection()?.getMode?.() || 'globe',
       },
     };
   }
@@ -1260,6 +1269,9 @@ export class VisualSettings {
   async applyVisualState(state = {}, { isCurrent = null } = {}) {
     const { setScopeMaskEnabled, setScopeMaskFeather } = this.services;
     const superseded = () => typeof isCurrent === 'function' && !isCurrent();
+    if (superseded()) return false;
+    // Shots frame a 3D camera; the flat map cannot hold their pitch.
+    await this._ensureGlobeProjection?.();
     if (superseded()) return false;
 
     if (state.style && state.style !== this.activeStyle) {

@@ -283,6 +283,8 @@ export class LocationNavigation {
       return;
     }
 
+    // Orbit pitches the camera, which the flat map cannot show.
+    if (!this.orbitController.active) void this._ensureGlobeProjection?.();
     const isActive = this.orbitController.toggle(this._currentTarget, {
       radius: this._currentPoi?.alt || 500,
       pitch: this._currentPoi?.pitch || -30,
