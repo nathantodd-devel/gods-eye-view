@@ -71,6 +71,36 @@ const layers = [
     noQuery: 'map overlay; no countable records',
   },
   {
+    id: 'aurora-oval',
+    aliases: ['aurora', 'aurora oval', 'northern lights', 'auroral zone'],
+    context: false,
+    noQuery: 'map overlay; no countable records',
+  },
+  {
+    id: 'drap-absorption',
+    aliases: [
+      'd region absorption',
+      'drap',
+      'absorption',
+      'radio blackout',
+      'hf absorption',
+    ],
+    context: false,
+    noQuery: 'map overlay; no countable records',
+  },
+  {
+    id: 'muf-map',
+    aliases: [
+      'muf',
+      'muf map',
+      'maximum usable frequency',
+      'band openings',
+      'hf propagation map',
+    ],
+    context: false,
+    noQuery: 'map overlay; no countable records',
+  },
+  {
     id: 'maidenhead-grid',
     aliases: ['maidenhead', 'maidenhead grid', 'grid squares', 'qth locator'],
     context: false,

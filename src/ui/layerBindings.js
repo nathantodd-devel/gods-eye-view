@@ -128,6 +128,8 @@ export class LayerBindings {
       'weather-lightning',
       'weather-cyclones',
       'day-night',
+      'aurora-oval',
+      'drap-absorption',
     ]) {
       const layer = this._dataManager?.layers?.get(id)?.module;
       if (typeof layer?.attachShellServices !== 'function') continue;

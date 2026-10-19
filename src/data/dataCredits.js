@@ -184,6 +184,12 @@ export const DATA_CREDITS = [
       "HF band ratings are this app's estimate, not a NOAA product",
   },
   {
+    key: 'kc2g-muf',
+    html:
+      'MUF map: <a href="https://prop.kc2g.com" target="_blank" rel="noopener">prop.kc2g.com</a> ' +
+      '(Andrew Rodland, KC2G), from ionosonde data compiled by the Lowell GIRO network',
+  },
+  {
     key: 'overture-military-names',
     html: 'Military area names: <a href="https://overturemaps.org" target="_blank" rel="noopener">Overture Maps Foundation</a> (ODbL)',
   },

@@ -88,7 +88,14 @@ const PANEL_GROUPS = [
   },
   {
     label: msg('Ham radio'),
-    ids: ['space-weather', 'day-night', 'maidenhead-grid'],
+    ids: [
+      'space-weather',
+      'day-night',
+      'aurora-oval',
+      'drap-absorption',
+      'muf-map',
+      'maidenhead-grid',
+    ],
   },
   {
     label: msg('Utilities'),

@@ -180,6 +180,9 @@ const CREDIT_EXPECTATIONS = {
   'local-neighborhoods': /DataSF|San Francisco/i,
   'weather-effects': /Open-Meteo/i,
   'space-weather': /Space Weather Prediction Center|SWPC/i,
+  'aurora-oval': /Space Weather Prediction Center|SWPC/i,
+  'drap-absorption': /Space Weather Prediction Center|SWPC/i,
+  'muf-map': /KC2G/i,
 };
 
 /**

@@ -30,6 +30,9 @@ import { createApplicationGnssIntegrity } from './layers/gnss.js';
 import { createApplicationSpaceWeather } from './layers/spaceWeather.js';
 import { createApplicationDayNight } from './layers/dayNight.js';
 import { createApplicationMaidenheadGrid } from './layers/maidenhead.js';
+import { createApplicationAurora } from './layers/aurora.js';
+import { createApplicationDrap } from './layers/drap.js';
+import { createApplicationMuf } from './layers/muf.js';
 import { createApplicationCables } from './layers/submarineCables.js';
 import { createApplicationStreetLevel } from './layers/streetLevel.js';
 import { createInfrastructureLayers } from '../data/infrastructure.js';
@@ -132,6 +135,9 @@ export function createApplicationCatalog({
         createApplicationSpaceWeather({ source: sources['space-weather'] }),
         createApplicationDayNight(),
         createApplicationMaidenheadGrid(),
+        createApplicationAurora({ source: sources.aurora }),
+        createApplicationDrap({ source: sources.drap }),
+        createApplicationMuf({ source: sources.muf }),
         createApplicationAlpr({ surface, source: sources.alpr }),
         createApplicationStreetLevel({
           surface,

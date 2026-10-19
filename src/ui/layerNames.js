@@ -43,6 +43,9 @@ export const LAYER_NAME_KEYS = Object.freeze({
   'space-weather': msg('Space weather'),
   'day-night': msg('Day / night'),
   'maidenhead-grid': msg('Maidenhead grid'),
+  'aurora-oval': msg('Aurora oval'),
+  'drap-absorption': msg('D-region absorption'),
+  'muf-map': msg('MUF map'),
   directions: msg('Directions'),
   'alpr-cameras': msg('ALPR Cameras'),
 });

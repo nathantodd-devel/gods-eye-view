@@ -113,6 +113,11 @@
     "panel",
     "view band|GLOBAL",
     "voice|ERROR",
+    "{band} · {mhz} MHz",
+    "{mhz} MHz",
+    "{mhz}+ MHz",
+    "{percent}%",
+    "{percent}%+",
     "{rate} msg/s",
     "{speed} kn",
     "{type}  SPD: {speed}  HDG: {heading}",
@@ -139,6 +144,8 @@
     "REC",
     "SFI {value}",
     "VS",
-    "WHOT/BHOT"
+    "WHOT/BHOT",
+    "{percent}%",
+    "{percent}%+"
   ]
 }

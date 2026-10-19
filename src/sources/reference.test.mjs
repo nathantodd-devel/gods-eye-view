@@ -19,6 +19,9 @@ test('reference factories retain compatibility without starting acquisition or s
     'cables',
     'gnss-integrity',
     'space-weather',
+    'aurora',
+    'drap',
+    'muf',
   ]);
   assert.notEqual(first.earthquakes, second.earthquakes);
   assert.notEqual(first['air-quality'], second['air-quality']);
@@ -32,5 +35,9 @@ test('reference factories retain compatibility without starting acquisition or s
   assert.equal(typeof first.cables.fetch, 'function');
   assert.equal(typeof first['gnss-integrity'].getSnapshot, 'function');
   assert.equal(typeof first['space-weather'].getSnapshot, 'function');
+  for (const id of ['aurora', 'drap', 'muf']) {
+    assert.notEqual(first[id], second[id]);
+    assert.equal(typeof first[id].getSnapshot, 'function');
+  }
   assert.equal(requests, 0);
 });
